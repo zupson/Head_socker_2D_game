@@ -1,5 +1,6 @@
 package hr.algebra.head_soccer_2d_game.game.factory;
 
+import hr.algebra.head_soccer_2d_game.controller.GoalListener;
 import hr.algebra.head_soccer_2d_game.manager.GameObjectManager;
 import hr.algebra.head_soccer_2d_game.manager.GamePhysicManager;
 import hr.algebra.head_soccer_2d_game.manager.GameStateManager;
@@ -12,8 +13,8 @@ public class GameFactory {
         return gameObjectManager;
     }
 
-    public GamePhysicManager cretePhysicsManager(GameObjectManager gom) {
-        var gamePhysicManager = new GamePhysicManager();
+    public GamePhysicManager cretePhysicsManager(GameObjectManager gom, GoalListener goalListener) {
+        var gamePhysicManager = new GamePhysicManager(goalListener);
         gamePhysicManager.initPhysics(gom);
         return gamePhysicManager;
     }

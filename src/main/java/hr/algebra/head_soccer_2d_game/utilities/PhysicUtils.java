@@ -1,5 +1,6 @@
 package hr.algebra.head_soccer_2d_game.utilities;
 
+import hr.algebra.head_soccer_2d_game.manager.GameStateManager;
 import hr.algebra.head_soccer_2d_game.model.entities.*;
 import hr.algebra.head_soccer_2d_game.model.entities.enums.Side;
 import hr.algebra.head_soccer_2d_game.model.entities.Simulable;
@@ -12,7 +13,7 @@ public class PhysicUtils {
     private PhysicUtils() {}
 
     public static void setupPlayerPhysics(Player player) {
-        var headFixture = createCircleFixture(player, 1.0, 0.5, 0.1);
+        var headFixture = createCircleFixture(player, 1.0, 0.5, 0.5);
         var footFixture = createRectangleFixture(player, 1.0, 1.0, 0.0);
         var body = player.getBody();
         body.addFixture(headFixture);
@@ -25,29 +26,33 @@ public class PhysicUtils {
         double width = goal.getWidth();
         double height = goal.getHeigh();
         double postWidth = 0.1;
-        BodyFixture postFxture = null;
+        BodyFixture postFixture = null;
 
         var crossbar = new BodyFixture(Geometry.createRectangle(width, postWidth));
         crossbar.getShape().translate(0, height / 2 - postWidth / 2);
         if (goal.getSide() == Side.LEFT) {
-            postFxture = new BodyFixture(Geometry.createRectangle(postWidth, height));
-            postFxture.getShape().translate(-width / 2 + postWidth / 2, 0);
+            postFixture = new BodyFixture(Geometry.createRectangle(postWidth, height));
+            postFixture.getShape().translate(-width / 2 + postWidth / 2, 0);
         } else if (goal.getSide() == Side.RIGHT) {
-            postFxture = new BodyFixture(Geometry.createRectangle(postWidth, height));
-            postFxture.getShape().translate(width / 2 - postWidth / 2, 0);
+            postFixture = new BodyFixture(Geometry.createRectangle(postWidth, height));
+            postFixture.getShape().translate(width / 2 - postWidth / 2, 0);
         }
+        postFixture.setSensor(true);
+        postFixture.setUserData(goal);
 
         var body = goal.getBody();
         body.addFixture(crossbar);
-        if (postFxture != null) {
-            body.addFixture(postFxture);
+        if (postFixture != null) {
+            body.addFixture(postFixture);
+            postFixture.setUserData(goal);
         }
         body.setMass(MassType.INFINITE);
         body.setUserData(goal);
     }
 
     public static void setupBallPhysics(Ball ball) {
-        var ballFixture = createCircleFixture(ball, 0.6, 0.3, 0.8);
+        var ballFixture = createCircleFixture(ball, 0.6, 0.3, 0.9);
+        ballFixture.setUserData(ball);
         var body = ball.getBody();
         body.addFixture(ballFixture);
         setupBody(ball, MassType.NORMAL, 0.3, 0.3, true);
@@ -104,4 +109,6 @@ public class PhysicUtils {
         body.setMass(MassType.INFINITE);
         body.setUserData(b);
     }
+
+
 }

@@ -4,7 +4,7 @@ import hr.algebra.head_soccer_2d_game.model.entities.enums.GameState;
 
 public class GameStateManager {
     private GameState currentState;
-
+    private boolean scoredGoalFlag;
     public GameStateManager() {
         currentState = GameState.MENU;
     }
@@ -22,5 +22,13 @@ public class GameStateManager {
 
     public boolean isRunning() {
         return currentState == GameState.RUNNING;
+    }
+
+    public boolean isScoredGoalFlag() {
+        return scoredGoalFlag;
+    }
+
+    public void setScoredGoalFlag(boolean scoredGoalFlag) {
+        this.scoredGoalFlag = scoredGoalFlag;
     }
 }

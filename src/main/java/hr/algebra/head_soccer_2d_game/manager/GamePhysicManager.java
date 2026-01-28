@@ -1,15 +1,26 @@
 package hr.algebra.head_soccer_2d_game.manager;
 
+import hr.algebra.head_soccer_2d_game.controller.GoalListener;
+import hr.algebra.head_soccer_2d_game.model.entities.Ball;
+import hr.algebra.head_soccer_2d_game.model.entities.Goal;
 import hr.algebra.head_soccer_2d_game.utilities.PhysicUtils;
 import org.dyn4j.dynamics.Body;
+import org.dyn4j.dynamics.BodyFixture;
+import org.dyn4j.dynamics.contact.Contact;
+import org.dyn4j.dynamics.contact.SolvedContact;
+import org.dyn4j.world.ContactCollisionData;
 import org.dyn4j.world.World;
+import org.dyn4j.world.listener.ContactListener;
 
-public class GamePhysicManager {
+
+public class GamePhysicManager implements ContactListener<Body> {
     private final World<Body> world;
-
-    public GamePhysicManager() {
+    private final GoalListener goalListener;
+    public GamePhysicManager(GoalListener goalListener) {
+        this.goalListener = goalListener;
         world = new World<>();
         world.setGravity(0, -9.81);
+        world.addContactListener(this);
     }
 
     public void initPhysics(GameObjectManager gom) {
@@ -84,5 +95,58 @@ public class GamePhysicManager {
 
     public void update(double deltaTime) {
         world.update(deltaTime);
+    }
+
+    @Override
+    public void begin(ContactCollisionData<Body> contactCollisionData, Contact contact) {
+        var f1 = contactCollisionData.getFixture1();
+        var f2 = contactCollisionData.getFixture2();
+        checkGoal(f1, f2);
+        checkGoal(f2, f1);
+    }
+
+    private void checkGoal(BodyFixture sensor, BodyFixture other) {
+        if (!sensor.isSensor()) return;
+        var sensorBody = sensor.getUserData();
+        var otherBody = other.getUserData();
+
+        System.out.println("SENSOR BODY: " + sensorBody );
+        System.out.println("OTHER BODY: " + otherBody);
+
+        if (sensorBody instanceof Goal && otherBody instanceof Ball) {
+            var goal = (Goal) sensorBody;
+            goalListener.onGoalScored(goal.getSide());
+            System.out.println("GOAL SCORE: " + goal.getScore() +" "+ goal.getSide());
+        }
+    }
+
+       @Override
+    public void persist(ContactCollisionData<Body> contactCollisionData, Contact contact, Contact contact1) {
+
+    }
+
+    @Override
+    public void end(ContactCollisionData<Body> contactCollisionData, Contact contact) {
+
+    }
+
+    @Override
+    public void destroyed(ContactCollisionData<Body> contactCollisionData, Contact contact) {
+
+    }
+
+    @Override
+    public void collision(ContactCollisionData<Body> contactCollisionData) {
+
+    }
+
+    @Override
+    public void preSolve(ContactCollisionData<Body> contactCollisionData, Contact contact) {
+
+    }
+
+    @Override
+    public void postSolve(ContactCollisionData<Body> contactCollisionData, SolvedContact solvedContact) {
+
     }
 }

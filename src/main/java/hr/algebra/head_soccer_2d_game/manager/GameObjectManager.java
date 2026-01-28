@@ -99,19 +99,47 @@ public class GameObjectManager {
         floor.getBody().translate(PosConstants.FLOOR_FIX_POS_X, PosConstants.FLOOR_FIX_POS_Y);
     }
 
-    private void setPlayersStartPositions() {
-        leftPlayer.getBody().translate(PosConstants.LEFT_PLAYER_POS_X, PosConstants.GAME_OBJECT_POS_Y);
-        rightPlayer.getBody().translate(PosConstants.RIGHT_PLAYER_POS_X, PosConstants.GAME_OBJECT_POS_Y);
+    //    public void setPlayersStartPositions() {
+//        leftPlayer.getBody().translate(PosConstants.LEFT_PLAYER_POS_X, PosConstants.GAME_OBJECT_POS_Y);
+//        rightPlayer.getBody().translate(PosConstants.RIGHT_PLAYER_POS_X, PosConstants.GAME_OBJECT_POS_Y);
+//    }
+    public void setPlayersStartPositions() {
+        resetBody(leftPlayer.getBody(),
+                PosConstants.LEFT_PLAYER_POS_X,
+                PosConstants.GAME_OBJECT_POS_Y);
+
+        resetBody(rightPlayer.getBody(),
+                PosConstants.RIGHT_PLAYER_POS_X,
+                PosConstants.GAME_OBJECT_POS_Y);
     }
+
+    private void resetBody(Body body, double x, double y) {
+        body.setLinearVelocity(0, 0);
+        body.setAngularVelocity(0);
+        body.clearForce();
+
+        body.getTransform().setTranslation(x, y);
+        body.getTransform().setRotation(0);
+
+        body.setAtRest(false);
+    }
+
 
     private void setGoalsFixedPositions() {
         leftGoal.getBody().translate(PosConstants.LEFT_GOAL_FIX_POS_X, PosConstants.GAME_OBJECT_POS_Y);
         rightGoal.getBody().translate(PosConstants.RIGHT_GOAL_FIX_POS_X, PosConstants.GAME_OBJECT_POS_Y);
     }
 
-    private void setBallStartPosition() {
-        ball.getBody().translate(PosConstants.BALL_POS_X, PosConstants.GAME_OBJECT_POS_Y);
+    //    public void setBallStartPosition() {
+//        ball.getBody().translate(PosConstants.BALL_POS_X, PosConstants.GAME_OBJECT_POS_Y);
+//    }
+    public void setBallStartPosition() {
+        resetBody(ball.getBody(),
+                PosConstants.BALL_POS_X,
+                PosConstants.GAME_OBJECT_POS_Y);
     }
+
+
 
     public Player getLeftPlayer() {
         return leftPlayer;

@@ -10,6 +10,7 @@ import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import org.dyn4j.dynamics.BodyFixture;
 
 public class GameController {
     private static final int SCENE_WIDTH = 1000;
@@ -22,7 +23,7 @@ public class GameController {
     private PlayerView playerView;
     private GameFieldView gameFieldView;
     private PlayerController playerController;
-//    private GameFieldController gameFieldController;
+
     @FXML
     private void initialize() {
         var currentInstance = GameContext.getCurrentInstance();
@@ -31,7 +32,6 @@ public class GameController {
         gameObjectManager = currentInstance.getGameObjectManager();
         playerController = new PlayerController(gameObjectManager);
 
-//        gameFieldController = new GameFieldController(gameObjectManager);
         graphicContext = gameCanvas.getGraphicsContext2D();
         gameCanvas.setWidth(SCENE_WIDTH);
         gameCanvas.setHeight(SCENE_HEIGHT);
@@ -46,12 +46,13 @@ public class GameController {
         });
 
         playerView = new PlayerView(graphicContext, gameObjectManager);
-        gameFieldView = new  GameFieldView(graphicContext, gameObjectManager);
+        gameFieldView = new GameFieldView(graphicContext, gameObjectManager);
 
-        AnimationTimer gameLoop = new GameLoop(gamePhysicManager, gameStateManager, this);
+        AnimationTimer gameLoop = new GameLoop(gameObjectManager,gamePhysicManager, gameStateManager, this);
         gameLoop.start();
         gameStateManager.setCurrentState(GameState.RUNNING);
     }
+
     public void render() {
         if (graphicContext == null || gameObjectManager == null) return;
         graphicContext.clearRect(0, 0, gameCanvas.getWidth(), gameCanvas.getHeight());
